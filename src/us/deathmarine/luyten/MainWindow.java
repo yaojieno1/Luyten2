@@ -521,6 +521,7 @@ public class MainWindow extends JFrame {
             try {
                 this.dispose();
             } finally {
+                jarModels.values().forEach(Model::closeFile);
                 FileUtil.deleteDir(CommonUtil.getTempRoot());
                 System.exit(0);
             }
