@@ -36,3 +36,11 @@ We use maven to handle our dependencies.
 &copy; 2012 Robert Futrell  
 [https://bobbylight.github.io/RSyntaxTextArea/](https://bobbylight.github.io/RSyntaxTextArea/)
 [All Rights Reserved](https://github.com/deathmarine/Luyten/blob/master/src/distfiles/RSyntaxTextArea.License.txt)
+
+### 新增特性
+1、增加了注册表注册右键菜单特性  
+2、增加了对于包内部压缩jar包的解析  
+3、增加了中英文切换  
+4、修复了打开不同文件夹下同名文件，后面打开的文件无法关闭的问题  
+5、针对同名文件增加增加title自增索引前缀用以区分
+6、增加了对于war包的解析支持
