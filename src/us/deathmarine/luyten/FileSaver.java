@@ -108,7 +108,9 @@ public class FileSaver {
 					System.out.println("[SaveAll]: " + inFile.getName() + " -> " + outFile.getName());
 					String inFileName = inFile.getName().toLowerCase();
 
-					if (inFileName.endsWith(".jar") || inFileName.endsWith(".zip")) {
+					if (inFileName.toLowerCase().endsWith(".jar")
+							|| inFileName.toLowerCase().endsWith(".zip")
+							|| inFileName.toLowerCase().endsWith(".war")) {
 						doSaveJarDecompiled(inFile, outFile);
 					} else if (inFileName.endsWith(".class")) {
 						doSaveClassDecompiled(inFile, outFile);

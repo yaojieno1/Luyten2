@@ -1,0 +1,210 @@
+{
+  "english": {
+    "en": "English",
+    "cn": "英文"
+  },
+  "chinese": {
+    "en": "Chinese",
+    "cn": "中文"
+  },
+  "file": {
+    "en": "File",
+    "cn": "文件"
+  },
+  "edit": {
+    "en": "Edit",
+    "cn": "编辑"
+  },
+  "themes": {
+    "en": "Themes",
+    "cn": "主题"
+  },
+  "operation": {
+    "en": "Operation",
+    "cn": "操作"
+  },
+  "settings": {
+    "en": "Settings",
+    "cn": "设置"
+  },
+  "help": {
+    "en": "Help",
+    "cn": "帮助"
+  },
+  "openFile": {
+    "en": "Open File...",
+    "cn": "打开文件..."
+  },
+  "closeFile": {
+    "en": "Close File",
+    "cn": "关闭文件"
+  },
+  "saveAs": {
+    "en": "Save As...",
+    "cn": "另存为..."
+  },
+  "saveAll": {
+    "en": "Save All...",
+    "cn": "保存全部..."
+  },
+  "recentFiles": {
+    "en": "Recent Files",
+    "cn": "最近的文件"
+  },
+  "clearRecentFiles": {
+    "en": "Clear Recent Files",
+    "cn": "清除最近的文件"
+  },
+  "clearTempFolder": {
+    "en": "Clear Temp Folder",
+    "cn": "清除临时目录"
+  },
+  "exit": {
+    "en": "Exit",
+    "cn": "退出"
+  },
+  "cut": {
+    "en": "Cut",
+    "cn": "剪切"
+  },
+  "copy": {
+    "en": "Copy",
+    "cn": "拷贝"
+  },
+  "paste": {
+    "en": "Paste",
+    "cn": "粘贴"
+  },
+  "selectAll": {
+    "en": "Select All",
+    "cn": "全选"
+  },
+  "find": {
+    "en": "Find...",
+    "cn": "查找..."
+  },
+  "findNext": {
+    "en": "Find Next",
+    "cn": "查找下一个"
+  },
+  "findPrevious": {
+    "en": "Find Previous",
+    "cn": "查找上一个"
+  },
+  "findAll": {
+    "en": "Find All",
+    "cn": "查找全部"
+  },
+  "default": {
+    "en": "Default",
+    "cn": "默认"
+  },
+  "defaultAlt": {
+    "en": "Default-Alt",
+    "cn": "默认-Alt"
+  },
+  "dark": {
+    "en": "Dark",
+    "cn": "暗黑"
+  },
+  "eclipse": {
+    "en": "Eclipse",
+    "cn": "Eclipse"
+  },
+  "visualStudio": {
+    "en": "Visual Studio",
+    "cn": "Visual Studio"
+  },
+  "intelliJ": {
+    "en": "IntelliJ",
+    "cn": "IntelliJ"
+  },
+  "packageExplorerStyle": {
+    "en": "Package Explorer Style",
+    "cn": "包资源管理器样式"
+  },
+  "filterOutInnerClassEntries": {
+    "en": "Filter Out Inner Class Entries",
+    "cn": "过滤内部类条目"
+  },
+  "singleClickOpen": {
+    "en": "Single Click Open",
+    "cn": "单击打开"
+  },
+  "exitByEsc": {
+    "en": "Exit By Esc",
+    "cn": "按 Esc 退出"
+  },
+  "flattenSwitchBlocks": {
+    "en": "Flatten Switch Blocks",
+    "cn": "展平开关块"
+  },
+  "forceExplicitImports": {
+    "en": "Force Explicit Imports",
+    "cn": "强制显式导入Imports"
+  },
+  "forceExplicitTypes": {
+    "en": "Force Explicit Types",
+    "cn": "强制显式类型"
+  },
+  "showSyntheticMembers": {
+    "en": "Show Synthetic Members",
+    "cn": "显示合成成员"
+  },
+  "excludeNestedTypes": {
+    "en": "Exclude Nested Types",
+    "cn": "排除嵌套类型"
+  },
+  "retainRedundantCasts": {
+    "en": "Retain Redundant Casts",
+    "cn": "保留多余的强制转换"
+  },
+  "enableUnicodeReplacement": {
+    "en": "Enable Unicode Replacement",
+    "cn": "启用 Unicode 替换"
+  },
+  "showDebugLineNumbers": {
+    "en": "Show Debug Line Numbers",
+    "cn": "显示调试行号"
+  },
+  "debugSettings": {
+    "en": "Debug Settings",
+    "cn": "调试设置"
+  },
+  "includeErrorDiagnostics": {
+    "en": "Include Error Diagnostics",
+    "cn": "包括错误诊断"
+  },
+  "debugLanguages": {
+    "en": "Debug Languages",
+    "cn": "调试语言"
+  },
+  "showLineNumbersInBytecode": {
+    "en": "Show Line Numbers In Bytecode",
+    "cn": "以字节码显示行号"
+  },
+  "legal": {
+    "en": "Legal",
+    "cn": "法律"
+  },
+  "debug": {
+    "en": "Debug",
+    "cn": "调试"
+  },
+  "listJVMClasses": {
+    "en": "List JVM Classes",
+    "cn": "列出 JVM 类"
+  },
+  "about": {
+    "en": "About",
+    "cn": "关于"
+  },
+  "structure": {
+    "en": "Structure",
+    "cn": "结构"
+  },
+  "code": {
+    "en": "Code",
+    "cn": "代码"
+  }
+}
