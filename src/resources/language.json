@@ -206,5 +206,97 @@
   "code": {
     "en": "Code",
     "cn": "代码"
+  },
+  "findOnKeyboard": {
+    "en": "Find",
+    "cn": "查找"
+  },
+  "findAllOnKeyboard": {
+    "en": "Find All",
+    "cn": "查找所有"
+  },
+  "findWhatOnKeyboard": {
+    "en": "Find What",
+    "cn": "查找目标"
+  },
+  "matchCaseOnKeyboard": {
+    "en": "Match Case",
+    "cn": "区分大小写"
+  },
+  "regexOnKeyboard": {
+    "en": "Regex",
+    "cn": "正则表达式"
+  },
+  "wholeWordsOnKeyboard": {
+    "en": "Whole Words",
+    "cn": "全词匹配"
+  },
+  "searchBackwardsOnKeyboard": {
+    "en": "Search Backwards",
+    "cn": "反向查找"
+  },
+  "wrapOnKeyboard": {
+    "en": "Wrap",
+    "cn": "循环查找"
+  },
+  "classnamesOnKeyboard": {
+    "en": "Classnames",
+    "cn": "仅类名称包含"
+  },
+  "stopOnKeyboard": {
+    "en": "Stop",
+    "cn": "停止"
+  },
+  "undoMenuItem": {
+    "en": "Undo",
+    "cn": "撤销"
+  },
+  "redoMenuItem": {
+    "en": "Redo",
+    "cn": "恢复"
+  },
+  "cutMenuItem": {
+    "en": "Cut",
+    "cn": "剪切"
+  },
+  "copyMenuItem": {
+    "en": "Copy",
+    "cn": "复制"
+  },
+  "pasteMenuItem": {
+    "en": "Paste",
+    "cn": "粘贴"
+  },
+  "deleteMenuItem": {
+    "en": "Delete",
+    "cn": "删除"
+  },
+  "selectAllMenuItem": {
+    "en": "Select All",
+    "cn": "全选"
+  },
+  "foldingMenu": {
+    "en": "Folding",
+    "cn": "折叠"
+  },
+  "toggleCurrentFoldMenuItem": {
+    "en": "Toggle Current Fold",
+    "cn": "切换当前折叠"
+  },
+  "collapseAllCommentFoldsMenuItem": {
+    "en": "Collapse All Comment Folds",
+    "cn": "收起所有注释"
+  },
+  "collapseAllFoldsMenuItem": {
+    "en": "Collapse All Folds",
+    "cn": "收起所有折叠"
+  },
+  "expandAllFoldsMenuItem": {
+    "en": "Expand All Folds",
+    "cn": "展开所有折叠"
+  },
+  "font": {
+    "en": "Font",
+    "cn": "字体"
   }
 }

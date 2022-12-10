@@ -52,6 +52,7 @@ public class FindBox extends JDialog {
 		this.setHideOnEscapeButton();
 
 		JLabel label = new JLabel("Find What:");
+		mainWindow.addOtherPageMap("findWhatOnKeyboard", label);
 		textField = new JTextField();
 
 		RSyntaxTextArea pane = mainWindow.getSelectedModel().getCurrentTextArea();
@@ -59,13 +60,19 @@ public class FindBox extends JDialog {
 			textField.setText(pane.getSelectedText());
 		}
 		mcase = new JCheckBox("Match Case");
+		mainWindow.addOtherPageMap("matchCaseOnKeyboard", mcase);
 		regex = new JCheckBox("Regex");
+		mainWindow.addOtherPageMap("regexOnKeyboard", regex);
 		wholew = new JCheckBox("Whole Words");
+		mainWindow.addOtherPageMap("wholeWordsOnKeyboard", wholew);
 		reverse = new JCheckBox("Search Backwards");
+		mainWindow.addOtherPageMap("searchBackwardsOnKeyboard", reverse);
 		wrap = new JCheckBox("Wrap");
+		mainWindow.addOtherPageMap("wrapOnKeyboard", wrap);
 
 		findButton = new JButton("Find");
-		findButton.addActionListener(new FindButton());
+		mainWindow.addOtherPageMap("findOnKeyboard", findButton);
+		findButton.addActionListener(new FindButtonAction());
 		this.getRootPane().setDefaultButton(findButton);
 
 		KeyStroke funcF3 = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0, false);
@@ -121,10 +128,11 @@ public class FindBox extends JDialog {
 
 		this.setName("Find");
 		this.setTitle("Find");
+		mainWindow.addOtherDialogMap("findOnKeyboard", this);
 		this.setVisible(true);
 	}
 
-	private class FindButton extends AbstractAction {
+	private class FindButtonAction extends AbstractAction {
 		private static final long serialVersionUID = 75954129199541874L;
 
 		@Override

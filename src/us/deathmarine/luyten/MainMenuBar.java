@@ -14,21 +14,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JTabbedPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
 
 import com.strobel.Procyon;
@@ -75,6 +61,7 @@ public class MainMenuBar extends JMenuBar {
 
     public MainMenuBar(MainWindow mainWnd) {
         this.mainWindow = mainWnd;
+        mainWindow.setShowLanguagesMap(showLanguagesMap);
         final ConfigSaver configSaver = ConfigSaver.getLoadedInstance();
         settings = configSaver.getDecompilerSettings();
         luytenPrefs = configSaver.getLuytenPreferences();
@@ -186,7 +173,7 @@ public class MainMenuBar extends JMenuBar {
     }
 
     private void updateDisplayLanguage() {
-        changeShowLanguage(luytenPrefs.getDisplayLanguage());
+        mainWindow.changeShowLanguage(luytenPrefs.getDisplayLanguage());
     }
 
     private void buildFileMenu(final JMenu fileMenu) {
@@ -609,27 +596,8 @@ public class MainMenuBar extends JMenuBar {
 
     private ActionListener showLanguageActionListener(String command) {
         return e -> {
-            changeShowLanguage(command);
+            mainWindow.changeShowLanguage(command);
         };
-    }
-
-    private void changeShowLanguage(String command) {
-        luytenPrefs.setDisplayLanguage(command);
-        Map<?, ?> showLanguageSetting = CommonUtil.getShowLanguageSetting();
-        showLanguagesMap.forEach((key, value) -> {
-            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
-            if (showLanguageInfo != null) {
-                value.setText(showLanguageInfo);
-            }
-        });
-        mainWindow.getBorderMap().forEach((key, value) -> {
-            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
-            if (showLanguageInfo != null) {
-                value.forEach(item -> {
-                    item.setTitle(showLanguageInfo);
-                });
-            }
-        });
     }
 
     private void buildHelpMenu(JMenu helpMenu) {

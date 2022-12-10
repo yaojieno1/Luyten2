@@ -198,6 +198,8 @@ public class Model extends JSplitPane {
         open.setContent(contents);
         hmap.add(open);
         addOrSwitchToTab(open);
+        // 创建OpenFile后更新语言提示信息
+        mainWindow.updateDisplayLanguage();
     }
 
     private void addOrSwitchToTab(final OpenFile open) {
@@ -507,6 +509,8 @@ public class Model extends JSplitPane {
             open.decompile();
             hmap.add(open);
             addOrSwitchToTab(open);
+            // 创建OpenFile后更新语言提示信息
+            mainWindow.updateDisplayLanguage();
         }
     }
 
@@ -566,6 +570,8 @@ public class Model extends JSplitPane {
             open.setContent(sb.toString());
             hmap.add(open);
             addOrSwitchToTab(open);
+            // 创建OpenFile后更新语言提示信息
+            mainWindow.updateDisplayLanguage();
         }
     }
 
@@ -1070,12 +1076,15 @@ public class Model extends JSplitPane {
                             .setUnicodeOutputEnabled(decompilationOptions.getSettings().isUnicodeOutputEnabled());
                     settings.getLanguage().decompileType(resolvedType, plainTextOutput, decompilationOptions);
                     String decompiledSource = stringwriter.toString();
+
                     OpenFile open = new OpenFile(internalName, "*/" + internalName, getTheme(), mainWindow);
                     open.setContent(decompiledSource);
                     JTabbedPane pane = new JTabbedPane();
                     pane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
                     pane.addTab("title", open.scrollPane);
                     pane.setSelectedIndex(pane.indexOfTab("title"));
+                    // 创建OpenFile后更新语言提示信息
+                    mainWindow.updateDisplayLanguage();
                 } catch (Exception e) {
                     Luyten.showExceptionDialog("Exception!", e);
                 }

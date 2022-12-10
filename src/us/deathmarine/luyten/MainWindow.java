@@ -1,9 +1,6 @@
 package us.deathmarine.luyten;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.dnd.DropTarget;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
@@ -15,7 +12,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,6 +49,9 @@ public class MainWindow extends JFrame {
     private Map<String, String> jarAndNameMap;
     private Map<String, AtomicInteger> jarNameIndexMap;
     private Map<String, Set<TitledBorder>> borderMap;
+    private Map<String, JMenuItem> showLanguagesMap;
+    private Map<String, Set<JComponent>> otherPageMap;
+    private Map<String, Set<Dialog>> otherDialogMap;
 
     public MainWindow(File fileFromCommandLine) {
         configSaver = ConfigSaver.getLoadedInstance();
@@ -57,6 +59,9 @@ public class MainWindow extends JFrame {
         luytenPrefs = configSaver.getLuytenPreferences();
 
         borderMap = new HashMap<>();
+        otherPageMap = new LinkedHashMap<>();
+        otherDialogMap = new LinkedHashMap<>();
+        showLanguagesMap = new LinkedHashMap<>();
         jarModels = new HashMap<String, Model>();
         jarAndNameMap = new HashMap<>();
         jarNameIndexMap = new HashMap<>();
@@ -154,6 +159,18 @@ public class MainWindow extends JFrame {
         return borderMap;
     }
 
+    public Map<String, Set<JComponent>> getOtherPageMap() {
+        return otherPageMap;
+    }
+
+    public Map<String, Set<Dialog>> getOtherDialogMap() {
+        return otherDialogMap;
+    }
+
+    public Map<String, JMenuItem> getShowLanguagesMap() {
+        return showLanguagesMap;
+    }
+
     public void addBorderMap(String key, TitledBorder border) {
         if (borderMap.containsKey(key)) {
             borderMap.get(key).add(border);
@@ -162,6 +179,80 @@ public class MainWindow extends JFrame {
             titledBorders.add(border);
             borderMap.put(key, titledBorders);
         }
+    }
+
+    public void addOtherPageMap(String key, JComponent component) {
+        if (otherPageMap.containsKey(key)) {
+            otherPageMap.get(key).add(component);
+        } else {
+            Set<JComponent> components = new LinkedHashSet<>();
+            components.add(component);
+            otherPageMap.put(key, components);
+        }
+    }
+
+    public void addOtherDialogMap(String key, Dialog dialog) {
+        if (otherDialogMap.containsKey(key)) {
+            otherDialogMap.get(key).add(dialog);
+        } else {
+            Set<Dialog> dialogs = new LinkedHashSet<>();
+            dialogs.add(dialog);
+            otherDialogMap.put(key, dialogs);
+        }
+    }
+
+    public void setShowLanguagesMap(Map<String, JMenuItem> showLanguagesMap) {
+        this.showLanguagesMap = showLanguagesMap;
+    }
+
+    public String getShowLanguageText(String key) {
+        Map<?, ?> showLanguageSetting = CommonUtil.getShowLanguageSetting();
+        return CommonUtil.getShowLanguageInfo(showLanguageSetting, key, luytenPrefs.getDisplayLanguage());
+    }
+
+    public void updateDisplayLanguage() {
+        changeShowLanguage(luytenPrefs.getDisplayLanguage());
+    }
+
+    public void changeShowLanguage(String command) {
+        luytenPrefs.setDisplayLanguage(command);
+        Map<?, ?> showLanguageSetting = CommonUtil.getShowLanguageSetting();
+        showLanguagesMap.forEach((key, value) -> {
+            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
+            if (showLanguageInfo != null) {
+                value.setText(showLanguageInfo);
+            }
+        });
+        getBorderMap().forEach((key, value) -> {
+            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
+            if (showLanguageInfo != null) {
+                value.forEach(item -> {
+                    item.setTitle(showLanguageInfo);
+                });
+            }
+        });
+        getOtherDialogMap().forEach((key, value) -> {
+            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
+            if (showLanguageInfo != null) {
+                value.forEach(item -> {
+                    item.setTitle(showLanguageInfo);
+                });
+            }
+        });
+        getOtherPageMap().forEach((key, value) -> {
+            String showLanguageInfo = CommonUtil.getShowLanguageInfo(showLanguageSetting, key, command);
+            if (showLanguageInfo != null) {
+                value.forEach(item -> {
+                    Class<? extends JComponent> aClass = item.getClass();
+                    try {
+                        Method setText = aClass.getMethod("setText", String.class);
+                        setText.invoke(item, showLanguageInfo);
+                    } catch (Exception ignored) {
+                        ignored.printStackTrace();
+                    }
+                });
+            }
+        });
     }
 
     private void createDefaultTab() {
@@ -312,8 +403,10 @@ public class MainWindow extends JFrame {
         try {
             RSyntaxTextArea pane = this.getSelectedModel().getCurrentTextArea();
             if (pane != null) {
-                if (findBox == null)
+                if (findBox == null) {
                     findBox = new FindBox(this);
+                    updateDisplayLanguage();
+                }
                 findBox.showFindBox();
             }
         } catch (Exception e) {
@@ -323,8 +416,10 @@ public class MainWindow extends JFrame {
 
     public void onFindAllMenu() {
         try {
-            if (findAllBox == null)
+            if (findAllBox == null) {
                 findAllBox = new FindAllBox(this);
+                updateDisplayLanguage();
+            }
             findAllBox.showFindBox();
 
         } catch (Exception e) {

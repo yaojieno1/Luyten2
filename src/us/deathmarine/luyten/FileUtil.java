@@ -822,8 +822,4 @@ public class FileUtil {
             }
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println(new File("E:\\code\\java\\Luyten\\temp\\20210529184508333\\BOOT-INF\\lib\\activation-1.1.jar").exists());
-    }
 }
