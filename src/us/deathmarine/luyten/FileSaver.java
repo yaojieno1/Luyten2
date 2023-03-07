@@ -4,23 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipException;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -38,6 +27,7 @@ import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
 import com.strobel.decompiler.languages.java.JavaFormattingOptions;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Performs Save and Save All
@@ -110,7 +100,8 @@ public class FileSaver {
 
 					if (inFileName.toLowerCase().endsWith(".jar")
 							|| inFileName.toLowerCase().endsWith(".zip")
-							|| inFileName.toLowerCase().endsWith(".war")) {
+							|| inFileName.toLowerCase().endsWith(".war")
+							|| inFileName.toLowerCase().endsWith(".ear")) {
 						doSaveJarDecompiled(inFile, outFile);
 					} else if (inFileName.endsWith(".class")) {
 						doSaveClassDecompiled(inFile, outFile);
@@ -142,7 +133,7 @@ public class FileSaver {
 				ZipOutputStream out = new ZipOutputStream(buffDest);) {
 			bar.setMinimum(0);
 			bar.setMaximum(jfile.size());
-			byte data[] = new byte[1024];
+			byte[] data = new byte[1024];
 			DecompilerSettings settings = cloneSettings();
 			LuytenTypeLoader typeLoader = new LuytenTypeLoader();
 			MetadataSystem metadataSystem = new MetadataSystem(typeLoader);
@@ -200,6 +191,47 @@ public class FileSaver {
 							out.closeEntry();
 						}
 					}
+				} else if ((entry.getName().endsWith(".jar"))
+						|| (entry.getName().endsWith(".ear"))
+						|| (entry.getName().endsWith(".war"))
+						|| (entry.getName().endsWith(".zip"))) {
+					File tmpJar = writeZipEntry(jfile.getInputStream(entry));
+					File tmpOutZip = File.createTempFile(entry.getName() + "-", ".src.zip");
+					doSaveJarDecompiled(tmpJar, tmpOutZip);
+					ZipFile zf = new ZipFile(tmpOutZip);
+					try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(
+							Files.newInputStream(tmpOutZip.toPath())))) {
+
+						ZipEntry zipEntry = null;
+						while ((zipEntry = zis.getNextEntry()) != null) {
+							String newFileName = entry.getName() + ".src" + File.separator + zipEntry.getName();
+							JarEntry etn = new JarEntry(newFileName);
+							out.putNextEntry(etn);
+							try {
+								InputStream in = zf.getInputStream(zipEntry);
+								if (in != null) {
+									try {
+										int count;
+										while ((count = in.read(data, 0, 1024)) != -1) {
+											out.write(data, 0, count);
+										}
+									} catch (Exception ex2) {
+										System.out.println(ex2);
+									} finally {
+										in.close();
+									}
+								}
+							}  catch (Exception ex3) {
+								System.out.println(ex3);
+							} finally {
+								out.closeEntry();
+							}
+						}
+					} catch (Exception ex4) {
+						System.out.println(ex4);
+					}
+					tmpJar.deleteOnExit();;
+					tmpOutZip.deleteOnExit();
 				} else {
 					try {
 						JarEntry etn = new JarEntry(entry.getName());
@@ -231,6 +263,21 @@ public class FileSaver {
 				}
 			}
 		}
+	}
+
+	private File writeZipEntry(InputStream is) {
+		FileOutputStream fos = null;
+		File f = null;
+		try {
+			f = File.createTempFile("LuytenTemp-", ".jar");
+			fos = new FileOutputStream(f);
+			IOUtils.copy(is, fos);
+		} catch (Exception ex) {
+			System.out.println("Exception RAISED!!! " + ex);
+		} finally {
+			IOUtils.closeQuietly(fos);
+		}
+		return f;
 	}
 
 	private void doSaveClassDecompiled(File inFile, File outFile) throws Exception {

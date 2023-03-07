@@ -344,7 +344,8 @@ public class Model extends JSplitPane {
 
                 if (file.getName().toLowerCase().endsWith(".jar")
                         || file.getName().toLowerCase().endsWith(".zip")
-                        || file.getName().toLowerCase().endsWith(".war")) {
+                        || file.getName().toLowerCase().endsWith(".war")
+                        || file.getName().toLowerCase().endsWith(".ear")) {
                     if (state == null) {
                         JarFile jfile = new JarFile(file);
                         ITypeLoader jarLoader = new JarTypeLoader(jfile);
@@ -359,7 +360,8 @@ public class Model extends JSplitPane {
                     }
                     if (path.toLowerCase().endsWith(".jar")
                             || path.toLowerCase().endsWith(".zip")
-                            || path.toLowerCase().endsWith(".war")) {
+                            || path.toLowerCase().endsWith(".war")
+                            || path.toLowerCase().endsWith(".ear")) {
                         String internalJarTemp = getInternalJarTemp(file.getAbsolutePath(), entry.getName());
                         System.out.println("temp:" + internalJarTemp);
                         System.out.println(String.format("[internalJarTemp] %s is exist：%s", internalJarTemp, new File(internalJarTemp).exists()));
@@ -782,7 +784,8 @@ public class Model extends JSplitPane {
                     }
                     if (file.getName().toLowerCase().endsWith(".zip")
                             || file.getName().toLowerCase().endsWith(".jar")
-                            || file.getName().toLowerCase().endsWith(".war")) {
+                            || file.getName().toLowerCase().endsWith(".war")
+                            || file.getName().toLowerCase().endsWith(".ear")) {
                         JarFile jfile;
                         jfile = new JarFile(file);
                         getLabel().setText("Loading: " + jfile.getName());

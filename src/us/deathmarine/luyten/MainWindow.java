@@ -148,7 +148,8 @@ public class MainWindow extends JFrame {
 
         if (jarModel != null && (fileFromCommandLine.getName().toLowerCase().endsWith(".jar")
                 || fileFromCommandLine.getName().toLowerCase().endsWith(".zip")
-                || fileFromCommandLine.getName().toLowerCase().endsWith(".war"))) {
+                || fileFromCommandLine.getName().toLowerCase().endsWith(".war")
+                || fileFromCommandLine.getName().toLowerCase().endsWith(".ear"))) {
             jarModel.startWarmUpThread();
         }
 
@@ -370,8 +371,13 @@ public class MainWindow extends JFrame {
         String fileName = openedFile.getName();
         if (fileName.endsWith(".class")) {
             fileName = fileName.replace(".class", ".java");
-        } else if (fileName.toLowerCase().endsWith(".jar") || fileName.toLowerCase().endsWith(".war")) {
-            fileName = "decompiled-" + fileName.replaceAll("\\.[jJ][aA][rR]", ".zip");
+        } else if (fileName.toLowerCase().endsWith(".jar")
+                || fileName.toLowerCase().endsWith(".zip")
+                || fileName.toLowerCase().endsWith(".war")
+                || fileName.toLowerCase().endsWith(".ear")) {
+            fileName = fileName
+                    .replaceAll("\\.zip", ".src.zip")
+                    .replaceAll("\\.[jJwWeE][aA][rR]", ".src.zip");
         } else {
             fileName = "saved-" + fileName;
         }

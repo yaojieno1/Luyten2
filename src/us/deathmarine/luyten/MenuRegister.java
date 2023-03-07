@@ -18,9 +18,11 @@ public class MenuRegister {
     public static void createProjectMenuRegistry() {
         String rootPath = new File("").getAbsolutePath();
         List<String> menus = Arrays.asList(
-                getAddRegistry("HKCR\\*\\shell\\luyten", "MUIVerb", "[LuyTen]反编译jar包"),
-                getAddRegistry("HKCR\\*\\shell\\luyten\\command", "",
-                        String.format("\"cmd.exe /k javaw -jar -Dfile.encoding=UTF-8 %s\\luyten-0.7.0.jar %s\"", rootPath, "%%1")));
+                "set pwd=%~dp0",
+                getAddRegistry("HKCR\\*\\shell\\luyten2", "MUIVerb", "\"Decompile Jar By LuyTen2\""),
+                getAddRegistry("HKCR\\*\\shell\\luyten2", "Icon", "\"%pwd%\\Luyten.ico\""),
+                getAddRegistry("HKCR\\*\\shell\\luyten2\\command", "",
+                        String.format("\"cmd.exe /k javaw -jar -Dfile.encoding=UTF-8 %sluyten-2.0.1.jar %s\"", "%pwd%", "%%1")));
         String outPath = FileUtil.splice(rootPath, "Menu-Registry.bat");
         LOGGER.info("[Registry] out path is: %s", outPath);
         FileUtil.writeLines(menus, outPath, "GBK", false);
@@ -29,8 +31,8 @@ public class MenuRegister {
     public static void createDeleteProjectMenuRegistry() {
         String rootPath = new File("").getAbsolutePath();
         List<String> menus = Arrays.asList(
-                getDeleteRegistry(DeleteModel.ALL, "HKCR\\*\\shell\\luyten\\command", ""),
-                getDeleteRegistry(DeleteModel.ALL, "HKCR\\*\\shell\\luyten", ""),
+                getDeleteRegistry(DeleteModel.ALL, "HKCR\\*\\shell\\luyten2\\command", ""),
+                getDeleteRegistry(DeleteModel.ALL, "HKCR\\*\\shell\\luyten2", ""),
                 "pause");
         String outPath = FileUtil.splice(rootPath, "Logout-Menu-Registry.bat");
         LOGGER.info("[Logout-Registry] out path is: %s", outPath);
