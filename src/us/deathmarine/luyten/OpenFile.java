@@ -9,34 +9,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JViewport;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.Scrollable;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import org.fife.ui.rsyntaxtextarea.LinkGenerator;
-import org.fife.ui.rsyntaxtextarea.LinkGeneratorResult;
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rsyntaxtextarea.Theme;
+
+import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.strobel.assembler.metadata.MetadataSystem;
@@ -70,7 +56,7 @@ public class OpenFile implements SyntaxConstants {
 	MainWindow mainWindow;
 	RTextScrollPane scrollPane;
 	Panel image_pane;
-	RSyntaxTextArea textArea;
+	MyRSyntaxTextArea textArea;
 	String name;
 	String path;
 	
@@ -91,7 +77,7 @@ public class OpenFile implements SyntaxConstants {
 		configSaver = ConfigSaver.getLoadedInstance();
 		luytenPrefs = configSaver.getLuytenPreferences();
 		
-		textArea = new RSyntaxTextArea(25, 70);
+		textArea = new MyRSyntaxTextArea(25, 70);
 		textArea.setCaretPosition(0);
 		textArea.requestFocusInWindow();
 		textArea.setMarkOccurrences(true);
@@ -154,6 +140,7 @@ public class OpenFile implements SyntaxConstants {
 		JPopupMenu pop = textArea.getPopupMenu();
 		pop.addSeparator();
 		JMenuItem item = new JMenuItem("Font");
+		mainWindow.addOtherPageMap("font", item);
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -453,6 +440,9 @@ public class OpenFile implements SyntaxConstants {
 				return null;
 			}
 		});
+
+		// 构造最后更新语言提示信息
+		mainWindow.updateDisplayLanguage();
 	}
 
 	public void setContent(String content) {
@@ -841,4 +831,152 @@ public class OpenFile implements SyntaxConstants {
 		return true;
 	}
 
+	public class MyRSyntaxTextArea extends RSyntaxTextArea {
+		public MyRSyntaxTextArea() {
+			super();
+		}
+
+		public MyRSyntaxTextArea(RSyntaxDocument doc) {
+			super(doc);
+		}
+
+		public MyRSyntaxTextArea(String text) {
+			super(text);
+		}
+
+		public MyRSyntaxTextArea(int rows, int cols) {
+			super(rows, cols);
+		}
+
+		public MyRSyntaxTextArea(String text, int rows, int cols) {
+			super(text, rows, cols);
+		}
+
+		public MyRSyntaxTextArea(RSyntaxDocument doc, String text, int rows, int cols) {
+			super(doc, text, rows, cols);
+		}
+
+		public MyRSyntaxTextArea(int textMode) {
+			super(textMode);
+		}
+
+		@Override
+		protected JPopupMenu createPopupMenu() {
+//			super.createPopupMenu();
+			JPopupMenu popup = createPopupMenuNew();
+			appendFoldingMenu(popup);
+			return popup;
+		}
+
+		protected JPopupMenu createPopupMenuNew() {
+			JPopupMenu menu = new JPopupMenu();
+			Class<?> rTextAreaClass = super.getClass().getSuperclass().getSuperclass();
+			JMenuItem jMenuItem;
+			menu.add(setFieldVal(JMenuItem.class, getField(rTextAreaClass, "undoMenuItem"),
+					jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "undoAction", this)), this));
+			mainWindow.addOtherPageMap("undoMenuItem", jMenuItem);
+			menu.add(setFieldVal(JMenuItem.class, getField(rTextAreaClass, "redoMenuItem"),
+					jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "redoAction", this)), this));
+			mainWindow.addOtherPageMap("redoMenuItem", jMenuItem);
+			menu.addSeparator();
+			menu.add(setFieldVal(JMenuItem.class, getField(rTextAreaClass, "cutMenuItem"),
+					jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "cutAction", this)), this));
+			mainWindow.addOtherPageMap("cutMenuItem", jMenuItem);
+			menu.add(jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "copyAction", this)));
+			mainWindow.addOtherPageMap("copyMenuItem", jMenuItem);
+			menu.add(setFieldVal(JMenuItem.class, getField(rTextAreaClass, "pasteMenuItem"),
+					jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "pasteAction", this)), this));
+			mainWindow.addOtherPageMap("pasteMenuItem", jMenuItem);
+			menu.add(setFieldVal(JMenuItem.class, getField(rTextAreaClass, "deleteMenuItem"),
+					jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "deleteAction", this)), this));
+			mainWindow.addOtherPageMap("deleteMenuItem", jMenuItem);
+			menu.addSeparator();
+			menu.add(jMenuItem = createPopupMenuItem(getFieldVal(rTextAreaClass, "selectAllAction", this)));
+			mainWindow.addOtherPageMap("selectAllMenuItem", jMenuItem);
+			return menu;
+		}
+
+		@Override
+		protected void appendFoldingMenu(JPopupMenu popup) {
+//			super.appendFoldingMenu(popup);
+			appendFoldingMenuNew(popup);
+		}
+
+		protected void appendFoldingMenuNew(JPopupMenu popup) {
+			Class<?> superclass = super.getClass().getSuperclass();
+			popup.addSeparator();
+			ResourceBundle bundle = ResourceBundle.getBundle(Objects.requireNonNull(getFieldVal(superclass, "MSG", this)));
+			JMenu foldingMenu;
+			setFieldVal(JMenu.class, getField(superclass, "foldingMenu"), foldingMenu = new JMenu(bundle.getString("ContextMenu.Folding")), this);
+			mainWindow.addOtherPageMap("foldingMenu", foldingMenu);
+
+			JMenuItem foldingMenuItem;
+			foldingMenu.add(foldingMenuItem = createPopupMenuItem(getFieldVal(superclass, "toggleCurrentFoldAction", this)));
+			mainWindow.addOtherPageMap("toggleCurrentFoldMenuItem", foldingMenuItem);
+			foldingMenu.add(foldingMenuItem = createPopupMenuItem(getFieldVal(superclass, "collapseAllCommentFoldsAction", this)));
+			mainWindow.addOtherPageMap("collapseAllCommentFoldsMenuItem", foldingMenuItem);
+			foldingMenu.add(foldingMenuItem = createPopupMenuItem(getFieldVal(superclass, "collapseAllFoldsAction", this)));
+			mainWindow.addOtherPageMap("collapseAllFoldsMenuItem", foldingMenuItem);
+			foldingMenu.add(foldingMenuItem = createPopupMenuItem(getFieldVal(superclass, "expandAllFoldsAction", this)));
+			mainWindow.addOtherPageMap("expandAllFoldsMenuItem", foldingMenuItem);
+			popup.add(foldingMenu);
+		}
+
+		/**
+		 * 获取对象指定属性的值
+		 * @param clazz 要获取属性的对象的Class
+		 * @param fieldName 属性名称
+		 * @param object 指定对象
+		 * @return 获取到的属性值
+		 * @param <T> 真实的属性类型
+		 */
+		private <T> T getFieldVal(Class<?> clazz, String fieldName, Object object) {
+			try {
+				Field declaredField = getField(clazz, fieldName);
+				if (declaredField != null) {
+					declaredField.setAccessible(true);
+					int modifiers = declaredField.getModifiers();
+					if(Modifier.isStatic(modifiers)) {
+						return (T) declaredField.get(null);
+					} else {
+						return (T) declaredField.get(object);
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		private Field getField(Class<?> clazz, String fieldName) {
+			try {
+				return clazz.getDeclaredField(fieldName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		/**
+		 * 给指定对象的属性设值，并返回该属性的真实类型
+		 * @param returnClazz 返回对象的class
+		 * @param field 指定属性field
+		 * @param val 要对该属性设置的值
+		 * @param obj 要设值对象
+		 * @return 设值的对象的真实属性
+		 * @param <T> 属性的类型
+		 */
+		private <T> T setFieldVal(Class<T> returnClazz, Field field, T val, Object obj) {
+			try {
+				if (field != null) {
+					field.setAccessible(true);
+					field.set(obj, val);
+					return val;
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
 }

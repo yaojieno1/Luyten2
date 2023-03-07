@@ -1,0 +1,15 @@
+### 操作步骤
+1、将start.bat和luyten-0.7.0.jar包放在同一目录下，最好是单独建一个文件夹目录来放这两个文件
+2、点击start.bat第一次启动jar包，启动后就可以关闭cmd窗口和程序窗口
+3、在jar包同级目录会生成两个bat文件，Menu-Registry.bat（注册右键菜单），Logout-Menu-Registry.bat（卸载右键菜单）
+4、点击Menu-Registry.bat注册右键菜单，注册之后，在任意文件上点击右键，会有“[LuyTen]反编译jar包”的选项，点击即可对该文件进行反编译展示
+注意：如果你的可执行luyten-0.7.0.jar包位置变了，记得重新执行第一步操作，点击同目录下的start.bat，重新生成全新的两个Menu-Registry.bat，Logout-Menu-Registry.bat文件，并点击Menu-Registry.bat重新注册
+
+
+### 新增特性
+1、增加了注册表注册右键菜单特性
+2、增加了对于包内部压缩jar包的解析
+3、增加了中英文切换
+4、修复了打开不同文件夹下同名文件，后面打开的文件无法关闭的问题
+5、针对同名文件增加增加title自增索引前缀用以区分
+6、增加了对于war包的解析支持

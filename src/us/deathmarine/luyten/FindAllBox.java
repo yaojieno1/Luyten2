@@ -6,10 +6,7 @@ import com.strobel.core.StringUtilities;
 import com.strobel.decompiler.DecompilationOptions;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
-
-import us.deathmarine.luyten.ConfigSaver;
-import us.deathmarine.luyten.MainWindow;
-import us.deathmarine.luyten.Model;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -34,13 +31,13 @@ import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 
 /**
- * 
+ *
  * this is the Find All Dialog
  * <p>
  * Change with 1.1
  * Adjust the find all box width
  * </p>
- * 
+ *
  * @author clevertension
  * @version 1.1
  */
@@ -49,7 +46,7 @@ public class FindAllBox extends JDialog {
 	private static final int MIN_WIDTH = 640;
 	private boolean searching;
 
-	private JButton findButton;
+	private JFindButton findButton;
 	private JTextField textField;
 	private JCheckBox mcase;
 	private JCheckBox regex;
@@ -75,14 +72,20 @@ public class FindAllBox extends JDialog {
 		this.mainWindow = mainWindow;
 
 		JLabel label = new JLabel("Find What:");
+		mainWindow.addOtherPageMap("findWhatOnKeyboard", label);
 		textField = new JTextField();
-		findButton = new JButton("Find");
-		findButton.addActionListener(new FindButton());
+		findButton = new JFindButton("Find", "Find");
+		mainWindow.addOtherPageMap("findOnKeyboard", findButton);
+		findButton.addActionListener(new FindButtonAction());
 
 		mcase = new JCheckBox("Match Case");
+		mainWindow.addOtherPageMap("matchCaseOnKeyboard", mcase);
 		regex = new JCheckBox("Regex");
+		mainWindow.addOtherPageMap("regexOnKeyboard", regex);
 		wholew = new JCheckBox("Whole Words");
+		mainWindow.addOtherPageMap("wholeWordsOnKeyboard", wholew);
 		classname = new JCheckBox("Classnames");
+		mainWindow.addOtherPageMap("classnamesOnKeyboard", classname);
 
 		this.getRootPane().setDefaultButton(findButton);
 
@@ -148,18 +151,18 @@ public class FindAllBox extends JDialog {
 		layout.setHorizontalGroup(
 				layout.createSequentialGroup().addComponent(label)
 						.addGroup(
-								layout.createParallelGroup(Alignment.LEADING).addComponent(statusLabel)
+								layout.createParallelGroup(Alignment.LEADING)
+										.addComponent(statusLabel)
 										.addComponent(textField)
 										.addGroup(layout.createSequentialGroup()
-												.addGroup(layout.createParallelGroup(Alignment.LEADING)
-														.addComponent(mcase))
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(wholew))
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(regex))
-										.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(classname)))
-				.addGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(listScroller)
-								.addComponent(progressBar))))
-				.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(findButton))
+												.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(mcase))
+												.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(wholew))
+												.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(regex))
+												.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(classname)))
+										.addGroup(layout.createSequentialGroup()
+												.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(listScroller)
+														.addComponent(progressBar))))
+						.addGroup(layout.createParallelGroup(Alignment.LEADING).addComponent(findButton))
 
 		);
 
@@ -179,23 +182,64 @@ public class FindAllBox extends JDialog {
 
 		this.setName("Find All");
 		this.setTitle("Find All");
+		mainWindow.addOtherDialogMap("findAllOnKeyboard", this);
 	}
 
-	private class FindButton extends AbstractAction {
+	private class JFindButton extends JButton {
+		private String flag;
+
+		public JFindButton(String flag) {
+			this.flag = flag;
+		}
+
+		public JFindButton(Icon icon, String flag) {
+			super(icon);
+			this.flag = flag;
+		}
+
+		public JFindButton(String text, String flag) {
+			super(text);
+			this.flag = flag;
+		}
+
+		public JFindButton(Action a, String flag) {
+			super(a);
+			this.flag = flag;
+		}
+
+		public JFindButton(String text, Icon icon, String flag) {
+			super(text, icon);
+			this.flag = flag;
+		}
+
+		public String getFlag() {
+			return flag;
+		}
+
+		public void setFlag(String flag) {
+			this.flag = flag;
+		}
+	}
+
+	private class FindButtonAction extends AbstractAction {
 		private static final long serialVersionUID = 75954129199541874L;
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			tmp_thread = new Thread() {
 				public void run() {
-					if (findButton.getText().equals("Stop")) {
+					if (findButton.getFlag().equals("Stop")) {
 						if (tmp_thread != null)
 							tmp_thread.interrupt();
 						setStatus("Stopped.");
-						findButton.setText("Find");
+						String findOnKeyboard = mainWindow.getShowLanguageText("findOnKeyboard");
+						findButton.setText(StringUtils.isEmpty(findOnKeyboard) ? "Find" : findOnKeyboard);
+						findButton.setFlag("Find");
 						locked = false;
 					} else {
-						findButton.setText("Stop");
+						String stopOnKeyboard = mainWindow.getShowLanguageText("stopOnKeyboard");
+						findButton.setText(StringUtils.isEmpty(stopOnKeyboard) ? "Stop" : stopOnKeyboard);
+						findButton.setFlag("Stop");
 						classesList.clear();
 						ConfigSaver configSaver = ConfigSaver.getLoadedInstance();
 						DecompilerSettings settings = configSaver.getDecompilerSettings();
@@ -207,7 +251,7 @@ public class FindAllBox extends JDialog {
 							Enumeration<JarEntry> entLength = jfile.entries();
 							initProgressBar(Collections.list(entLength).size());
 							Enumeration<JarEntry> ent = jfile.entries();
-							while (ent.hasMoreElements() && findButton.getText().equals("Stop")) {
+							while (ent.hasMoreElements() && findButton.getFlag().equals("Stop")) {
 								JarEntry entry = ent.nextElement();
 								String name = entry.getName();
 								setStatus(name);
@@ -264,9 +308,11 @@ public class FindAllBox extends JDialog {
 								}
 							}
 							setSearching(false);
-							if (findButton.getText().equals("Stop")) {
+							if (findButton.getFlag().equals("Stop")) {
 								setStatus("Done.");
-								findButton.setText("Find");
+								String findOnKeyboard = mainWindow.getShowLanguageText("findOnKeyboard");
+								findButton.setText(StringUtils.isEmpty(findOnKeyboard) ? "Find" : findOnKeyboard);
+								findButton.setFlag("Find");
 								locked = false;
 							}
 							jfile.close();
